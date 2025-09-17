@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timetable & Staff Panel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #033f3f;
+      color: #edeaf1;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color:#033f3f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #ffffff;
+    }
+
+    .menu-icon {
+      font-size: 2rem;
+      cursor: pointer;
+      color: #ffffff;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -250px;
+      width: 150px;
+      height: 100%;
+      background-color: #f1f0ed;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      transition: right 0.3s ease;
+      z-index: 200;
+      padding: 2rem 1rem;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar button {
+      display: block;
+      width: 100%;
+      margin: 1rem 0;
+      padding: 0.8rem;
+      font-size: 1rem;
+      background-color: #11b3b3;
+      border: none;
+      border-radius: 5px;
+      color: #000000;
+      cursor: pointer;
+    }
+
+    .main-content {
+      padding: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #f9f8fc;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #101111;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f6f6fa;
+      color: #151616;
+    }
+
+    td {
+      background-color: #418888;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #22a3a3;
+    }
+
+    .staff-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #033f3f;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      z-index: 300;
+      padding: 6rem 2rem;
+      overflow-y: auto;
+    }
+
+    .staff-panel.active {
+      display: flex;
+    }
+
+    .staff-panel h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #f0e8e6;
+    }
+
+    .staff-panel table {
+      width: 100%;
+      max-width: 900px;
+      margin-top: 1rem;
+    }
+
+    .staff-panel th, .staff-panel td {
+      padding: 1rem;
+      background-color: #418888;
+      color: #000;
+    }
+
+    .staff-panel th {
+      background-color: #f6f6fa;
+      color: #151616;
+    }
+
+    .staff-panel tr:nth-child(even) td {
+      background-color: #22a3a3;
+    }
+
+    .logout-message {
+      display: none;
+      text-align: center;
+      font-size: 1.5rem;
+      padding: 2rem;
+      color: #0f0f0f;
+    }
+
+    .logout-message.active {
+      display: block;
+    }
+
+    .close-btn {
+      margin: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #22a3a3;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Timetable</h1>
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <button onclick="showStaffDetails()">Staff Details</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main-content">
+    <h2>Weekly Timetable</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>9:00 – 10:00</td><td>Math</td><td>Physics</td><td>Chemistry</td><td>English</td><td>CS</td><td>Env Sci</td></tr>
+        <tr><td>10:00 – 11:00</td><td>Physics</td><td>Chemistry</td><td>Math</td><td>CS</td><td>English</td><td>Soft Skills</td></tr>
+        <tr><td>11:00 – 12:00</td><td>English</td><td>CS</td><td>Physics</td><td>Chemistry</td><td>Math</td><td>Workshop</td></tr>
+        <tr><td>12:00 – 1:00</td><td>Chemistry</td><td>English</td><td>CS</td><td>Math</td><td>Physics</td><td>Seminar</td></tr>
+        <tr><td>1:00 – 2:00</td><td colspan="6">Lunch Break</td></tr>
+        <tr><td>2:00 – 3:00</td><td>CS</td><td>Math</td><td>English</td><td>Physics</td><td>Chemistry</td><td>Project</td></tr>
+        <tr><td>3:00 – 4:00</td><td>Lab</td><td>Lab</td><td>Lab</td><td>Lab</td><td>Lab</td><td>Sports</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="staff-panel" id="staffPanel">
+    <h2>Absent Staff Details</h2>
+    <button class="close-btn" onclick="hideStaffDetails()">Close</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Date Absent</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Prof. Hari</td>
+          <td>Computer Science</td>
+          <td>2025-09-11</td>
+          <td>Medical Leave</td>
+        </tr>
+        <tr>
+          <td>Dr. Meena</td>
+          <td>Mathematics</td>
+          <td>2025-09-11</td>
+          <td>Conference</td>
+        </tr>
+        <tr>
+          <td>Mr. Raj</td>
+          <td>Physics</td>
+          <td>2025-09-11</td>
+          <td>Personal Leave</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="logout-message" id="logoutMessage">
+    You have been logged out.
+  </div>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+  }
+
+  function showStaffDetails() {
+    document.getElementById('staffPanel').classList.add('active');
+    document.getElementById('logoutMessage').classList.remove('active');
+    document.getElementById('sidebar').classList.remove('active');
+  }
+
+  function hideStaffDetails() {
+    document.getElementById('staffPanel').classList.remove('active');
+  }
+
+  function logout() {
+    document.getElementById('staffPanel').classList.remove('active');
+    document.getElementById('logoutMessage').classList.add('active');
+    document.getElementById('sidebar').classList.remove('active');
+  }
+</script>
+</body>
+</html>

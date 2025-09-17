@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timetable & Staff Panel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #033f3f;
+      color: #edeaf1;
+      overflow-x: hidden;
+    }
+
+    header {
+      background-color:#033f3f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #ffffff;
+    }
+
+    .menu-icon {
+      font-size: 2rem;
+      cursor: pointer;
+      color: #050404;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -250px;
+      width: 150px;
+      height: 100%;
+      background-color: #f1f0ed;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      transition: right 0.3s ease;
+      z-index: 200;
+      padding: 2rem 1rem;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar button {
+      display: block;
+      width: 100%;
+      margin: 1rem 0;
+      padding: 0.8rem;
+      font-size: 1rem;
+      background-color: #11b3b3;
+      border: none;
+      border-radius: 5px;
+      color: #000000;
+      cursor: pointer;
+    }
+
+    .main-content {
+      padding: 2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #f9f8fc;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #101111;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f6f6fa;
+      color: #151616;
+    }
+
+    td {
+      background-color: #418888;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #22a3a3;
+    }
+
+    .staff-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #033f3f;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      z-index: 300;
+      padding: 6rem;
+    }
+
+    .staff-panel.active {
+      display: flex;
+    }
+
+    .staff-panel h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #f0e8e6;
+    }
+
+    .staff-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .staff-card {
+      background-color: #22a3a3;
+      padding: 1rem;
+      border-radius: 10px;
+      width: 220px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .staff-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 0.5rem;
+      object-fit: cover;
+      border: 2px solid #080808;
+    }
+
+    .staff-card p {
+      margin: 0.3rem 0;
+      color: #0a0a0a;
+    }
+
+    .logout-message {
+      display: none;
+      text-align: center;
+      font-size: 1.5rem;
+      padding: 2rem;
+      color: #0f0f0f;
+    }
+
+    .logout-message.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Timetable</h1>
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <button onclick="showStaffDetails()">Staff Details</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main-content">
+    <h2>Weekly Timetable</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>9:00 – 10:00</td><td>Math</td><td>Physics</td><td>Chemistry</td><td>English</td><td>CS</td><td>Env Sci</td></tr>
+        <tr><td>10:00 – 11:00</td><td>Physics</td><td>Chemistry</td><td>Math</td><td>CS</td><td>English</td><td>Soft Skills</td></tr>
+        <tr><td>11:00 – 12:00</td><td>English</td><td>CS</td><td>Physics</td><td>Chemistry</td><td>Math</td><td>Workshop</td></tr>
+        <tr><td>12:00 – 1:00</td><td>Chemistry</td><td>English</td><td>CS</td><td>Math</td><td>Physics</td><td>Seminar</td></tr>
+        <tr><td>1:00 – 2:00</td><td colspan="6">Lunch Break</td></tr>
+        <tr><td>2:00 – 3:00</td><td>CS</td><td>Math</td><td>English</td><td>Physics</td><td>Chemistry</td><td>Project</td></tr>
+        <tr><td>3:00 – 4:00</td><td>Lab</td><td>Lab</td><td>Lab</td><td>Lab</td><td>Lab</td><td>Sports</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="staff-panel" id="staffPanel">
+    <h2>Staff Details</h2>
+    <button onclick="hideStaffDetails()" style="margin: 1rem; padding: 0.6rem 1.2rem; background-color: #22a3a3; border: none; border-radius: 5px; color: white; cursor: pointer;">
+
+    <div class="staff-row">
+      <div class="staff-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYSjMsQaDAQ7mARCPjcHyKVbHBNIpI_6wNg&s" alt="Hari" />
+        <p><strong>Name:</strong> Prof. Hari</p>
+        <p><strong>Department:</strong> Computer Science</p>
+        <p><strong>Contact:</strong> +91 98765 43210</p>
+      </div>
+      <div class="staff-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYSjMsQaDAQ7mARCPjcHyKVbHBNIpI_6wNg&s" alt="Meena" />
+        <p><strong>Name:</strong> Dr. Meena</p>
+        <p><strong>Department:</strong> Mathematics</p>
+        <p><strong>Contact:</strong> +91 91234 56789</p>
+      </div>
+      <div class="staff-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzYSjMsQaDAQ7mARCPjcHyKVbHBNIpI_6wNg&s" alt="Raj" />
+        <p><strong>Name:</strong> Mr. Raj</p>
+        <p><strong>Department:</strong> Physics</p>
+        <p><strong>Contact:</strong> +91 99887 76655</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="logout-message" id="logoutMessage">
+    You have been logged out.
+  </div>
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+  }
+
+  function showStaffDetails() {
+    document.getElementById('staffPanel').classList.add('active');
+    document.getElementById('logoutMessage').classList.remove('active');
+    document.getElementById('sidebar').classList.remove('active');
+  }
+
+  function hideStaffDetails() {
+    document.getElementById('staffPanel').classList.remove('active');
+  }
+
+  function logout() {
+    document.getElementById('staffPanel').classList.remove('active');
+    document.getElementById('logoutMessage').classList.add('active');
+    document.getElementById('sidebar').classList.remove('active');
+  }
+</script>
+</body>
+</html>
